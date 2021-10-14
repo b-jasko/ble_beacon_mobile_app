@@ -5,10 +5,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
+// ignore: non_constant_identifier_names
+final APP_COMPANY_IDENTIFIER = 0x59;
+var devicesMap = { '01':'nazwa1',
+                    '02':'nazwa2',
+                    '03':'nazwa3',
+                    '04':'nazwa4' };
+
 class ScanResultTile extends StatelessWidget {
   const ScanResultTile({Key key, this.result, this.onTap}) : super(key: key);
 
-  static const int APP_COMPANY_IDENTIFIER = 0x59;
 
   final ScanResult result;
   final VoidCallback onTap;
@@ -30,7 +36,9 @@ class ScanResultTile extends StatelessWidget {
         ],
       );
     } else {
-      return Text(result.device.id.toString());
+      return Text(devicesMap[getNiceManufacturerData(
+                      result.advertisementData.manufacturerData).substring(89, 91)]);
+      // return Text(result.device.id.toString());
     }
   }
 
