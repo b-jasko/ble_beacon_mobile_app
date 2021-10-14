@@ -8,6 +8,8 @@ import 'package:flutter_blue/flutter_blue.dart';
 class ScanResultTile extends StatelessWidget {
   const ScanResultTile({Key key, this.result, this.onTap}) : super(key: key);
 
+  static const int APP_COMPANY_IDENTIFIER = 0x59;
+
   final ScanResult result;
   final VoidCallback onTap;
 
@@ -87,36 +89,36 @@ class ScanResultTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: _buildTitle(context),
-      leading: Text(result.rssi.toString()),
-      trailing: RaisedButton(
-        child: Text('CONNECT'),
-        color: Colors.black,
-        textColor: Colors.white,
-        onPressed: (result.advertisementData.connectable) ? onTap : null,
-      ),
-      children: <Widget>[
-        _buildAdvRow(
-            context, 'Complete Local Name', result.advertisementData.localName),
-        _buildAdvRow(context, 'Tx Power Level',
-            '${result.advertisementData.txPowerLevel ?? 'N/A'}'),
-        _buildAdvRow(
-            context,
-            'Manufacturer Data',
-            getNiceManufacturerData(
-                    result.advertisementData.manufacturerData) ??
-                'N/A'),
-        _buildAdvRow(
-            context,
-            'Service UUIDs',
-            (result.advertisementData.serviceUuids.isNotEmpty)
-                ? result.advertisementData.serviceUuids.join(', ').toUpperCase()
-                : 'N/A'),
-        _buildAdvRow(context, 'Service Data',
-            getNiceServiceData(result.advertisementData.serviceData) ?? 'N/A'),
-      ],
-    );
+    if (false == result.advertisementData.connectable
+    && APP_COMPANY_IDENTIFIER == result.advertisementData.manufacturerData.entries.first.key) {
+      return ExpansionTile(
+        title: _buildTitle(context),
+        leading: Text(result.rssi.toString()),
+        children: <Widget>[
+          _buildAdvRow(
+              context, 'Complete Local Name', result.advertisementData.localName),
+          _buildAdvRow(context, 'Tx Power Level',
+              '${result.advertisementData.txPowerLevel ?? 'N/A'}'),
+          _buildAdvRow(
+              context,
+              'Manufacturer Data',
+              getNiceManufacturerData(
+                      result.advertisementData.manufacturerData) ??
+                  'N/A'),
+          _buildAdvRow(
+              context,
+              'Service UUIDs',
+              (result.advertisementData.serviceUuids.isNotEmpty)
+                  ? result.advertisementData.serviceUuids.join(', ').toUpperCase()
+                  : 'N/A'),
+          _buildAdvRow(context, 'Service Data',
+              getNiceServiceData(result.advertisementData.serviceData) ?? 'N/A'),
+        ],
+      );
+    }
+    else {
+      return Container(width: 0.0, height: 0.0);
+    }
   }
 }
 
