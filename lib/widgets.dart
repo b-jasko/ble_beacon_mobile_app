@@ -83,6 +83,17 @@ class ScanResultTile extends StatelessWidget {
     });
     return res.join(', ');
   }
+  
+  String getBatteryLevel(Map<int, List<int>> data) {
+    if (data.isEmpty) {
+      return null;
+    }
+    String res;
+    data.forEach((id, bytes) {
+      res = bytes[17].toString();
+    });
+    return res;
+  }
 
   String getNiceServiceData(Map<String, List<int>> data) {
     if (data.isEmpty) {
@@ -103,24 +114,27 @@ class ScanResultTile extends StatelessWidget {
         title: _buildTitle(context),
         leading: Text(result.rssi.toString()),
         children: <Widget>[
-          _buildAdvRow(
-              context, 'Complete Local Name', result.advertisementData.localName),
-          _buildAdvRow(context, 'Tx Power Level',
-              '${result.advertisementData.txPowerLevel ?? 'N/A'}'),
+          // _buildAdvRow(
+          //     context, 'Complete Local Name', result.advertisementData.localName),
+          // _buildAdvRow(context, 'Tx Power Level',
+          //     '${result.advertisementData.txPowerLevel ?? 'N/A'}'),
           _buildAdvRow(
               context,
               'Manufacturer Data',
               getNiceManufacturerData(
                       result.advertisementData.manufacturerData) ??
                   'N/A'),
-          _buildAdvRow(
-              context,
-              'Service UUIDs',
-              (result.advertisementData.serviceUuids.isNotEmpty)
-                  ? result.advertisementData.serviceUuids.join(', ').toUpperCase()
-                  : 'N/A'),
-          _buildAdvRow(context, 'Service Data',
-              getNiceServiceData(result.advertisementData.serviceData) ?? 'N/A'),
+          // _buildAdvRow(
+          //     context,
+          //     'Service UUIDs',
+          //     (result.advertisementData.serviceUuids.isNotEmpty)
+          //         ? result.advertisementData.serviceUuids.join(', ').toUpperCase()
+          //         : 'N/A'),
+          // _buildAdvRow(context, 'Service Data',
+          //     getNiceServiceData(result.advertisementData.serviceData) ?? 'N/A'),
+          _buildAdvRow(context, 'Battery Level',
+              getBatteryLevel(
+                      result.advertisementData.manufacturerData) ?? 'N/A'),
         ],
       );
     }
